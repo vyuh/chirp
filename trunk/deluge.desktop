@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=0.1
+Encoding=UTF-8
+Name=Chirp
+Comment=Python/GTK+ Twitter desktop client
+Exec=chirp
+Icon=chirp.png
+Terminal=false
+Type=Application
+Categories=Application;Network
+StartupNotify=true
+GenericName=
