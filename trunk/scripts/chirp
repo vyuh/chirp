@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+import chirp
+
+if __name__ == '__main__':
+	ch = chirp.Chirp()
