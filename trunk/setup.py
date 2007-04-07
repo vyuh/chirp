@@ -17,7 +17,7 @@ setuptools.setup (
 	author_email='illicium@gmail.com',
 	description='Twitter desktop client',
 	long_description='Python/GTK+ Twitter desktop client',
-	license='New BSD License',
+	license='MIT License',
 	url='http://code.google.com/p/chirp',
 	keywords='twitter desktop client gtk python',
 	install_requires=['python-twitter >= 0.3'],
