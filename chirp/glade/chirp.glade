@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Sun Apr  1 15:48:40 2007 by illicium@jaquemont-->
+<!--Generated with glade3 3.2.0 on Sat Apr  7 21:54:47 2007 by illicium@jaquemont-->
 <glade-interface>
   <widget class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
@@ -79,15 +79,6 @@
                   <widget class="GtkMenu" id="viewPopup">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkCheckMenuItem" id="menuItemTabs">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Tabs</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <signal name="toggled" handler="on_menuItemTabs_toggled"/>
-                      </widget>
-                    </child>
-                    <child>
                       <widget class="GtkCheckMenuItem" id="menuItemStatusbar">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Statusbar</property>
@@ -127,6 +118,7 @@
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Profile</property>
                         <property name="use_underline">True</property>
+                        <property name="active">True</property>
                         <property name="draw_as_radio">True</property>
                       </widget>
                     </child>
@@ -159,52 +151,138 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkFrame" id="statusFrame">
+          <widget class="GtkViewport" id="statusViewport">
             <property name="visible">True</property>
-            <property name="border_width">10</property>
-            <property name="label_xalign">0</property>
-            <property name="shadow_type">GTK_SHADOW_IN</property>
+            <property name="shadow_type">GTK_SHADOW_NONE</property>
             <child>
-              <widget class="GtkLabel" id="statusLabel">
+              <widget class="GtkHBox" id="statusHBox">
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <property name="xpad">7</property>
-                <property name="ypad">7</property>
-                <property name="label" translatable="yes">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Quisque tincidunt diam et odio. In tristique scelerisque dolor. Nam a turpis amet.</property>
-                <property name="wrap">True</property>
-                <property name="selectable">True</property>
-              </widget>
-            </child>
-            <child>
-              <widget class="GtkHBox" id="frameTitleHBox">
-                <property name="visible">True</property>
+                <property name="border_width">5</property>
                 <property name="spacing">5</property>
                 <child>
                   <widget class="GtkImage" id="userImage">
                     <property name="visible">True</property>
-                    <property name="stock">gtk-about</property>
+                    <property name="yalign">0</property>
+                    <property name="ypad">5</property>
+                    <property name="stock">gtk-dialog-error</property>
                     <property name="icon_size">6</property>
-                  </widget>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="usernameLabel">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">&lt;span weight="bold" size="larger"&gt;illicium&lt;/span&gt;</property>
-                    <property name="use_markup">True</property>
-                    <property name="selectable">True</property>
-                    <property name="single_line_mode">True</property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkVBox" id="statusVBox">
+                    <property name="visible">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                    <child>
+                      <widget class="GtkLabel" id="usernameLabel">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="ypad">5</property>
+                        <property name="label" translatable="yes">&lt;span weight="bold" size="larger"&gt;Testuser Lipsum&lt;/span&gt;</property>
+                        <property name="use_markup">True</property>
+                        <property name="single_line_mode">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkScrolledWindow" id="statusScrolledWindow">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="shadow_type">GTK_SHADOW_IN</property>
+                        <child>
+                          <widget class="GtkTextView" id="statusTextView">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="pixels_above_lines">3</property>
+                            <property name="pixels_below_lines">3</property>
+                            <property name="editable">False</property>
+                            <property name="wrap_mode">GTK_WRAP_CHAR</property>
+                            <property name="left_margin">3</property>
+                            <property name="right_margin">3</property>
+                            <property name="cursor_visible">False</property>
+                            <property name="text" translatable="yes">Quisque adipiscing. Morbi fringilla, odio ut imperdiet imperdiet, magna sapien dignissim urna, nec adipiscing ante tortor eget quam posuere.</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <child>
+                  <widget class="GtkVBox" id="buttonVBox">
+                    <property name="visible">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                    <child>
+                      <widget class="GtkButton" id="updateButton1">
+                        <property name="visible">True</property>
+                        <property name="can_default">True</property>
+                        <property name="has_default">True</property>
+                        <child>
+                          <widget class="GtkImage" id="updateImage1">
+                            <property name="visible">True</property>
+                            <property name="stock">gtk-home</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="updateButton2">
+                        <property name="visible">True</property>
+                        <property name="can_default">True</property>
+                        <property name="has_default">True</property>
+                        <child>
+                          <widget class="GtkImage" id="updateImage2">
+                            <property name="visible">True</property>
+                            <property name="stock">gtk-jump-to</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="updateButton3">
+                        <property name="visible">True</property>
+                        <property name="can_default">True</property>
+                        <property name="has_default">True</property>
+                        <child>
+                          <widget class="GtkImage" id="updateImage3">
+                            <property name="visible">True</property>
+                            <property name="stock">gtk-dialog-error</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </widget>
-              <packing>
-                <property name="type">label_item</property>
-              </packing>
             </child>
           </widget>
           <packing>
@@ -213,47 +291,65 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkTreeView" id="profileTreeView">
+          <widget class="GtkViewport" id="statusesViewport">
             <property name="visible">True</property>
+            <property name="border_width">5</property>
+            <child>
+              <widget class="GtkTreeView" id="statusesTreeView1">
+                <property name="visible">True</property>
+                <property name="extension_events">GDK_EXTENSION_EVENTS_CURSOR</property>
+              </widget>
+            </child>
           </widget>
           <packing>
             <property name="position">3</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkHSeparator" id="_HSeparator1">
+          <widget class="GtkVBox" id="updateVBox">
             <property name="visible">True</property>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkHBox" id="updateHBox">
-            <property name="visible">True</property>
-            <property name="border_width">5</property>
-            <property name="spacing">5</property>
+            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <child>
-              <widget class="GtkEntry" id="updateEntry">
+              <widget class="GtkHSeparator" id="HSeparator1">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="has_focus">True</property>
-                <property name="max_length">140</property>
-                <property name="activates_default">True</property>
-                <property name="truncate_multiline">True</property>
+                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
               </widget>
+              <packing>
+                <property name="expand">False</property>
+              </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="updateButton">
+              <widget class="GtkHBox" id="updateHBox">
                 <property name="visible">True</property>
-                <property name="can_default">True</property>
-                <property name="has_default">True</property>
+                <property name="border_width">5</property>
+                <property name="spacing">5</property>
                 <child>
-                  <widget class="GtkImage" id="updateImage">
+                  <widget class="GtkEntry" id="updateEntry">
                     <property name="visible">True</property>
-                    <property name="stock">gtk-add</property>
+                    <property name="can_focus">True</property>
+                    <property name="has_focus">True</property>
+                    <property name="max_length">140</property>
+                    <property name="activates_default">True</property>
+                    <property name="truncate_multiline">True</property>
                   </widget>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="updateButton">
+                    <property name="visible">True</property>
+                    <property name="can_default">True</property>
+                    <property name="has_default">True</property>
+                    <child>
+                      <widget class="GtkImage" id="updateImage">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-add</property>
+                        <property name="icon_size">1</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </widget>
               <packing>
@@ -264,7 +360,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="position">5</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -277,7 +373,6 @@
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">GTK_PACK_END</property>
-            <property name="position">5</property>
           </packing>
         </child>
       </widget>
