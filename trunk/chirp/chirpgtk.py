@@ -53,7 +53,6 @@ class ChirpGTK:
 			# Edit menu
 			'on_menuitemPreferences_activate': pass,
 			# View menu
-			'on_menuItemTabs_toggled': pass,
 			'on_menuItemStatusbar_toggled': pass,
 			'on_menuItemRefresh_activate': pass,
 			# Go menu
