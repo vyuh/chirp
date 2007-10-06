@@ -22,10 +22,22 @@ THE SOFTWARE.
 
 import chirpgtk
 import twitter
+import sys
+
+VERSION = '0.1'
 
 class Chirp:
-	def __init__(self):
-		ui = chirpgtk.ChirpGTK()
-		
-	def quit(self):
-		pass
+    def __init__(self):
+        self.api = twitter.Api()
+        self.api.SetXTwitterHeaders('Chirp', 'http://illicium.nonlogic.org/chirp/meta.xml', VERSION)
+        self.mainWindow = chirpgtk.ChirpGTK(parent=self)
+
+    def authenticate(cls, username, password):
+        api = twitter.Api(username, password)
+
+    def signout(cls):
+        api.ClearCredentials()
+
+    def quit(cls, widget = None):
+        sys.exit(1)
+

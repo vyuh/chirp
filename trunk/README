@@ -1,4 +1,4 @@
 Chirp depends on the following:
   * GTK+ 2.x
   * PyGTK 2.x
-  * python-twitter 0.3 (http://code.google.com/p/python-twitter/)
+  * python-twitter (http://code.google.com/p/python-twitter/)

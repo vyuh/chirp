@@ -4,6 +4,7 @@ import setuptools
 
 data = [('share/applications' , ['chirp.desktop']),
 	('share/pixmaps' , ['chirp.png'])]
+	('share/pixmaps' , ['chirp48.png'])]
 
 setuptools.setup (
 	name='chirp',
@@ -20,6 +21,6 @@ setuptools.setup (
 	license='MIT License',
 	url='http://code.google.com/p/chirp',
 	keywords='twitter desktop client gtk python',
-	install_requires=['python-twitter >= 0.3'],
+	install_requires=['python-twitter'],
 	zip_safe=False
 )

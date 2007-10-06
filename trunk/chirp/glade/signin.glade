@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Sun Apr  1 15:48:30 2007 by illicium@jaquemont-->
+<!--Generated with glade3 3.2.2 on Sun Sep 30 14:36:23 2007 by illicium@jaquemont-->
 <glade-interface>
   <widget class="GtkDialog" id="signInDialog">
     <property name="border_width">5</property>
@@ -69,31 +69,28 @@
                     <property name="n_columns">2</property>
                     <property name="row_spacing">5</property>
                     <child>
-                      <widget class="GtkCheckButton" id="rememberCheckButton">
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <widget class="GtkEntry" id="passwordEntry">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="label" translatable="yes">Remember me</property>
-                        <property name="use_stock">True</property>
-                        <property name="draw_indicator">True</property>
+                        <property name="visibility">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="usernameLabel">
+                      <widget class="GtkEntry" id="usernameEntry">
                         <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="xpad">5</property>
-                        <property name="label" translatable="yes">Username:</property>
                       </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkLabel" id="passwordLabel">
@@ -108,25 +105,28 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="usernameEntry">
+                      <widget class="GtkLabel" id="usernameLabel">
                         <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="xpad">5</property>
+                        <property name="label" translatable="yes">Username:</property>
                       </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="x_padding">5</property>
-                      </packing>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="passwordEntry">
+                      <widget class="GtkCheckButton" id="rememberCheckButton">
                         <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="label" translatable="yes">Remember me</property>
+                        <property name="use_stock">True</property>
+                        <property name="response_id">0</property>
+                        <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="x_padding">5</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
                       </packing>
                     </child>
                   </widget>
@@ -155,6 +155,7 @@
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">gtk-cancel</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
               </widget>
             </child>
             <child>
@@ -162,6 +163,7 @@
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">gtk-ok</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
               </widget>
               <packing>
                 <property name="position">1</property>
