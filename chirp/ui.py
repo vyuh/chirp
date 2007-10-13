@@ -27,22 +27,53 @@ import gtk.glade
 import gobject
 import pango
 
+import threading, time
+
+import cache
+import htmlentities
+
 from pkg_resources import resource_filename
 GLADE_MAIN = resource_filename(__name__, 'glade/chirp.glade')
 GLADE_PREFS = resource_filename(__name__, 'glade/prefs.glade')
 GLADE_SIGNIN = resource_filename(__name__, 'glade/signin.glade')
 
+gobject.threads_init()
+
 class MainWindow(object):
+    VIEW_PUBLIC = 1
+    VIEW_FRIENDS = 2
+    VIEW_USER = 3
+
+    class refreshThread(threading.Thread):
+        def __init__(self, window):
+            threading.Thread.__init__(self)
+            self.window = window
+        
+        def run(cls):
+            status = cls.window.pushStatus('refresh', 'Refreshing...')
+            cls.window.clearTweets()
+            if cls.window.view == cls.window.VIEW_PUBLIC:
+                for tweet in cls.window.parent.api.GetPublicTimeline():
+                    gobject.idle_add(cls.window.addTweet, tweet)
+
+            cls.window.popStatus(status)
+
     def __init__(self, parent):
         self.parent = parent
 
         self.xml = gtk.glade.XML(GLADE_MAIN, 'mainWindow')
         self.window = self.xml.get_widget('mainWindow')
 
+        self.cachefetcher = cache.DiskCacheFetcher('/tmp/chirp')
+
         self.__initTreeView()
         self.__initAccelerators()
-
         self.connectEvents()
+
+        self.view = self.VIEW_PUBLIC
+        
+        self.rthread = self.refreshThread(window=self)
+        self.refresh()
 
     def __initTreeView(cls):
         treeview = cls.xml.get_widget('mainTreeView')
@@ -51,53 +82,92 @@ class MainWindow(object):
         cls.liststore = gtk.ListStore(gobject.TYPE_OBJECT, gobject.TYPE_STRING, gobject.TYPE_STRING)
         treeview.set_model(cls.liststore)
 
-        # make cellrenderers
         avatar_cr = gtk.CellRendererPixbuf()
         user_cr = gtk.CellRendererText()
         status_cr = gtk.CellRendererText()
         
-        # set renderer properties
         status_cr.set_property('ellipsize', pango.ELLIPSIZE_END)
-
-        # make columns
+        
         user_column = gtk.TreeViewColumn('User', None)
         status_column = gtk.TreeViewColumn('Status', status_cr, text=2)
        
-        # add renderers to user column
         user_column.pack_start(avatar_cr, False)
         user_column.pack_start(user_cr, True)
         user_column.add_attribute(avatar_cr, 'pixbuf', 0)
         user_column.add_attribute(user_cr, 'text', 1)
         
-        # add cols to treeview
         treeview.append_column(user_column)
         treeview.append_column(status_column)
 
     def __initAccelerators(cls):
-        """accels = gtk.AccelGroup()
-        accels.connect_group(gtk.gdk.keyval_from_name('f5'), None, gtk.ACCEL_VISIBLE, self.refresh) # f5
-        self.window.add_accel_group(accels)"""
+        #accels = gtk.AccelGroup()
+        #accels.connect_group(gtk.gdk.keyval_from_name('f5'), None, gtk.ACCEL_VISIBLE, self.refresh) # f5
+        #self.window.add_accel_group(accels)
         pass
 
     def connectEvents(cls):
         events = {
-            'on_mainWindow_delete_event': cls.parent.hide,
-            'on_updateButton_clicked': cls.parent.refresh
+            'on_mainWindow_delete_event': cls.hide,
+            'on_updateButton_clicked': cls.refresh
             }
         cls.xml.signal_autoconnect(events)
 
-    def addTweet(cls, tweet):
-        cls.liststore.append([None, tweet.user.screen_name, tweet.text])
 
+    """def getAvatarPsThread(cls, url, pixbuf, width=None, height=None):
+        print url
+        
+        def avatarPreparedCallback(loader, image):
+            pixbuf = loader.get_pixbuf()
+            pixbuf.fill(0)
+            image.set_from_pixbuf(pixbuf)
+        
+        def avatarUpdatedCallback(loader, x, y, width, height, pixbuf):
+            pass
+
+        if width and height:
+            loader.set_size(width, height)
+
+        #loader.connect('area-prepared', avatarPreparedCallback, pixbuf)
+        loader.connect('area-updated', avatarUpdatedCallback, pixbuf)
+
+        data = cls.cachefetcher.fetch(url, 900)
+        loader.write(data)
+        loader.close()
+
+        return False"""
+
+    def addTweet(cls, tweet):
+        #cls.getAvatar(tweet.user.profile_image_url, 24, 24),
+        cls.liststore.append([None,
+                              tweet.user.screen_name,
+                              htmlentities.decode(tweet.text)])
+    
     def clearTweets(cls):
         cls.liststore.clear()
 
+    def pushStatus(cls, context, text):
+        statusbar = cls.xml.get_widget('statusbar')
+        contextid = gtk.Statusbar.get_context_id(statusbar, context)
+        statusbar.push(contextid, text)
+        return contextid
+
+    def popStatus(cls, contextid):
+        statusbar = cls.xml.get_widget('statusbar')
+        statusbar.pop(contextid)
+
+    def refresh(cls, widget=None, event=None):
+        if not cls.rthread.isAlive():
+            cls.rthread = cls.refreshThread(window=cls)
+            cls.rthread.start()
+
     def show(cls, widget=None, event=None):
+        cls.parent.show()
         cls.window.show()
 
     def hide(cls, widget=None, event=None):
+        cls.parent.hide()
         cls.window.hide()
-
+    
     def toggleStatusbar(cls, widget=None, event=None):
         statusbar = cls.xml.get_widget('statusbar')
         checkbox = cls.xml.get_widget('menuitemStatusbar')

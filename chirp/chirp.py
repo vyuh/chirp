@@ -20,9 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import chirpgtk
+import gtk
 import twitter
 import sys
+
+import ui
 
 VERSION = '0.1'
 
@@ -30,14 +32,30 @@ class Chirp:
     def __init__(self):
         self.api = twitter.Api()
         self.api.SetXTwitterHeaders('Chirp', 'http://illicium.nonlogic.org/chirp/meta.xml', VERSION)
-        self.mainWindow = chirpgtk.ChirpGTK(parent=self)
+        
+        self.mainwindow = ui.MainWindow(parent=self)
+        self.mainwindow.show()
 
-    def authenticate(cls, username, password):
+        gtk.main()
+
+    def apiAuthenticate(cls, username, password):
         api = twitter.Api(username, password)
 
-    def signout(cls):
+    def apiSignout(cls):
         api.ClearCredentials()
 
+    def showPrefs(cls, widget=None, event=None):
+        prefs = ui.PreferencesDialog(parent=cls)
+        prefs.show()
+
+    def show(cls):
+        print 'chirpgtk show'
+
+    def hide(cls):
+        print 'chirpgtk hide -- quit'
+        cls.quit()
+
     def quit(cls, widget = None):
+        gtk.main_quit()
         sys.exit(1)
 
