@@ -3,7 +3,7 @@ ez_setup.use_setuptools()
 import setuptools
 
 data = [('share/applications' , ['chirp.desktop']),
-	('share/pixmaps' , ['chirp.png'])]
+	('share/pixmaps' , ['chirp.png']),
 	('share/pixmaps' , ['chirp48.png'])]
 
 setuptools.setup (

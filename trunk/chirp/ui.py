@@ -27,7 +27,7 @@ import gobject
 
 import threading
 
-import cache
+import uiext, cache
 
 from pkg_resources import resource_filename
 UI_MAIN = resource_filename(__name__, 'ui/chirp.ui')
@@ -51,6 +51,8 @@ class MainWindow(object):
 
             if self.window.view == self.window.VIEW_PUBLIC:
                 statuses = self.window.parent.api.GetPublicTimeline()
+            elif self.window.view == self.window.VIEW_FRIENDS:
+                statuses = self.window.parent.api.GetFriendsTimeline()
             elif self.window.view == self.window.VIEW_USER:
                 statuses = self.window.parent.api.GetUserTimeline('twitter')
 
@@ -65,12 +67,8 @@ class MainWindow(object):
             self.iter = iter
         
         def run(self):
-            print 'loading', self.url
-
             loader = gtk.gdk.PixbufLoader()
-
-            #if width and height:
-                #loader.set_size(width, height)
+            loader.set_size(48, 48)
         
             data = self.window.cachefetcher.fetch(self.url, 900)
             loader.write(data)
@@ -80,6 +78,8 @@ class MainWindow(object):
 
     def __init__(self, parent):
         self.parent = parent
+
+        self.parent.apiAuthenticate()
 
         self.cachefetcher = cache.DiskCacheFetcher()
 
@@ -92,7 +92,7 @@ class MainWindow(object):
         self.__connectSignals()
 
         self.tweets = []
-        self.view = self.VIEW_PUBLIC
+        self.view = self.VIEW_FRIENDS
 
         self.rthread = self.refreshThread(window=self)
         self.refresh()
@@ -104,7 +104,7 @@ class MainWindow(object):
         self.model = gtk.ListStore(gobject.TYPE_OBJECT, gobject.TYPE_STRING, gobject.TYPE_STRING)
         treeview.set_model(self.model)
 
-        avatar_cr = gtk.CellRendererPixbuf()
+        avatar_cr = uiext.CellRendererRoundedPixbuf()
         user_cr = gtk.CellRendererText()
         status_cr = gtk.CellRendererText()
         
