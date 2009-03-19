@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.14"/>
+  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkWindow" id="mainWindow">
+    <property name="title" translatable="yes">Chirp</property>
+    <property name="role">chirp</property>
+    <property name="default_width">275</property>
+    <property name="default_height">400</property>
+    <property name="destroy_with_parent">True</property>
+    <signal name="delete_event" handler="on_mainWindow_delete_event"/>
+    <child>
+      <object class="GtkVBox" id="mainVBox">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkVBox" id="updateVBox">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkHBox" id="updateHBox">
+                <property name="visible">True</property>
+                <property name="border_width">5</property>
+                <property name="spacing">4</property>
+                <child>
+                  <object class="GtkEntry" id="updateEntry">
+                    <property name="visible">True</property>
+                    <property name="max_length">138</property>
+                    <property name="activates_default">True</property>
+                    <property name="truncate_multiline">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="updateButton">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="can_default">True</property>
+                    <property name="has_default">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
+                    <signal name="clicked" handler="on_updateButton_clicked"/>
+                    <child>
+                      <object class="GtkImage" id="updateImage">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-add</property>
+                        <property name="icon-size">1</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHSeparator" id="HSeparator2">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="mainScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <child>
+              <object class="GtkTreeView" id="mainTreeView">
+                <property name="visible">True</property>
+                <property name="headers_visible">False</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
