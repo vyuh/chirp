@@ -1,5 +1,5 @@
 """
-Copyright (c) 2007 George Pomortsev <illicium@gmail.com>
+Copyright (c) 2007-2009 Egor Pomortsev <illicium@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ import gtk
 import twitter
 import sys
 
+import config
 import ui
 
 VERSION = '0.1'
@@ -31,31 +32,35 @@ VERSION = '0.1'
 class Chirp:
     def __init__(self):
         self.api = twitter.Api()
-        self.api.SetXTwitterHeaders('Chirp', 'http://illicium.nonlogic.org/chirp/meta.xml', VERSION)
+        self.api.SetXTwitterHeaders('Chirp', '', VERSION)
+
+        self.config = config.ChirpConfig()
         
         self.mainwindow = ui.MainWindow(parent=self)
         self.mainwindow.show()
 
         gtk.main()
 
-    def apiAuthenticate(cls, username, password):
-        api = twitter.Api(username, password)
+    def apiAuthenticate(self, username=None, password=None):
+        if not username: username = self.config.getUsername()
+        if not password: password = self.config.getPassword()
+        
+        self.api = twitter.Api(username, password)
 
-    def apiSignout(cls):
-        api.ClearCredentials()
+    def apiSignout(self):
+        self.api.ClearCredentials()
 
-    def showPrefs(cls, widget=None, event=None):
-        prefs = ui.PreferencesDialog(parent=cls)
+    def showPrefs(self, widget=None, event=None):
+        prefs = ui.PreferencesDialog(parent=self)
         prefs.show()
 
-    def show(cls):
-        print 'chirpgtk show'
+    def show(self):
+        pass
 
-    def hide(cls):
-        print 'chirpgtk hide -- quit'
-        cls.quit()
+    def hide(self):
+        self.quit()
 
-    def quit(cls, widget = None):
+    def quit(self, widget=None):
         gtk.main_quit()
         sys.exit(1)
 

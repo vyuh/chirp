@@ -1,5 +1,5 @@
 """
-Copyright (c) 2007 George Pomortsev <illicium@gmail.com>
+Copyright (c) 2007-2009 Egor Pomortsev <illicium@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,18 +20,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import ConfigParser, os
+
 class ChirpConfig:
 	def __init__(self):
 		self._config = ConfigParser.ConfigParser()
-		self._config.read(os.path.expanduser('~/.chirprc'))
+		self._config.read(os.path.expanduser('~/.config/chirp'))
 
-	def GetUsername(self):
-		return self._GetOption('username')
+	def getUsername(self):
+		return self._getOption('username')
 
-	def GetPassword(self):
-		return self._GetOption('password')
+	def getPassword(self):
+		return self._getOption('password')
 
-	def _GetOption(self, option):
+	def _getOption(self, option):
 		try:
 			return self._config.get('Chirp', option)
 		except:

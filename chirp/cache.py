@@ -1,20 +1,17 @@
-import md5, os, tempfile, time, urllib
+import hashlib, os, tempfile, time, urllib
 
-class DiskCacheFetcher:
+class DiskCacheFetcher(object):
     """
-    Mechanism for cacheing urllib.urlopen() calls to a temporary file
+    Mechanism for caching urllib.urlopen() calls to a temporary file
     source: http://developer.yahoo.com/python/python-caching.html
     """
-    def __init__(self, cache_dir=None):
-        # If no cache directory specified, use system temp directory
-        if cache_dir is None:
-            cache_dir = tempfile.gettempdir()
 
-        self.cache_dir = cache_dir
+    def __init__(self, dir=None):
+        self.cache_dir = dir if dir else tempfile.mkdtemp()
 
-    def fetch(self, url, max_age = 0):
+    def fetch(self, url, max_age=0):
         # Use MD5 hash of the URL as the filename
-        filename = md5.new(url).hexdigest()
+        filename = hashlib.md5(url).hexdigest()
         filepath = os.path.join(self.cache_dir, filename)
         if os.path.exists(filepath):
             if int(time.time()) - os.path.getmtime(filepath) < max_age:
