@@ -1,4 +1,4 @@
-import hashlib, os, tempfile, time, urllib
+import hashlib, os, shutil, tempfile, time, urllib
 
 class DiskCacheFetcher(object):
     """
@@ -6,8 +6,8 @@ class DiskCacheFetcher(object):
     source: http://developer.yahoo.com/python/python-caching.html
     """
 
-    def __init__(self, dir=None):
-        self.cache_dir = dir if dir else tempfile.mkdtemp()
+    def __init__(self):
+        self.cache_dir = tempfile.mkdtemp()
 
     def fetch(self, url, max_age=0):
         # Use MD5 hash of the URL as the filename
@@ -26,3 +26,7 @@ class DiskCacheFetcher(object):
         os.rename(temppath, filepath)
  
         return data 
+
+    def cleanup(self):
+        shutil.rmtree(self.cache_dir)
+

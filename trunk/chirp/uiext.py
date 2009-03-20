@@ -37,7 +37,7 @@ class CellRendererRoundedPixbuf(gtk.GenericCellRenderer):
     
     def on_get_size(self, widget, cell_area):
         if not self.pixbuf:
-                return (0, 0, 0, 0)
+            return (0, 0, 0, 0)
 
         pixbuf_width = self.pixbuf.get_width()
         pixbuf_height = self.pixbuf.get_height()
@@ -72,7 +72,7 @@ class CellRendererRoundedPixbuf(gtk.GenericCellRenderer):
 
         pix_rect = gtk.gdk.Rectangle()
         pix_rect.x, pix_rect.y, pix_rect.width, pix_rect.height = \
-                                self.on_get_size(widget, cell_area)
+            self.on_get_size(widget, cell_area)
 
         pix_rect.x += cell_area.x + self.get_property('xpad')
         pix_rect.y += cell_area.y + self.get_property('ypad')

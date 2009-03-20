@@ -37,22 +37,27 @@ class Chirp:
         self.config = config.ChirpConfig()
         
         self.mainwindow = ui.MainWindow(parent=self)
+        self.prefsdialog = ui.PreferencesDialog(parent=self)
+        #self.signindialog = ui.SignInDialog(parent=self)
+
         self.mainwindow.show()
 
         gtk.main()
 
-    def apiAuthenticate(self, username=None, password=None):
-        if not username: username = self.config.getUsername()
-        if not password: password = self.config.getPassword()
+    def authenticate(self, username=None, password=None):
+        if not username:
+            username = self.config.get('account', 'username')
+
+        if not password:
+            password = self.config.get('account', 'password')
         
         self.api = twitter.Api(username, password)
 
-    def apiSignout(self):
+    def signout(self):
         self.api.ClearCredentials()
 
     def showPrefs(self, widget=None, event=None):
-        prefs = ui.PreferencesDialog(parent=self)
-        prefs.show()
+        self.prefsdialog.show()
 
     def show(self):
         pass
@@ -61,6 +66,7 @@ class Chirp:
         self.quit()
 
     def quit(self, widget=None):
+        self.mainwindow.cachefetcher.cleanup()
         gtk.main_quit()
         sys.exit(1)
 

@@ -23,18 +23,41 @@ THE SOFTWARE.
 import ConfigParser, os
 
 class ChirpConfig:
-	def __init__(self):
-		self._config = ConfigParser.ConfigParser()
-		self._config.read(os.path.expanduser('~/.config/chirp'))
+    CONFIG_FILE = '~/.config/chirp/chirp.conf'
+    DEFAULTS = {
+        # [appearance]
+        'list_striped': 'no',
+        'avatar_rounded': 'true',
+        'avatar_size': 'large',
+        'format': '<b>$username</b>\n$message'
+    }
 
-	def getUsername(self):
-		return self._getOption('username')
+    def __init__(self):
+        self.config = ConfigParser.SafeConfigParser(self.DEFAULTS)
+        self.config.read(os.path.expanduser(self.CONFIG_FILE))
 
-	def getPassword(self):
-		return self._getOption('password')
+    def get(self, section, option, type=None):
+        try:
+            if not self.config.has_section(section): section = 'DEFAULT'
 
-	def _getOption(self, option):
-		try:
-			return self._config.get('Chirp', option)
-		except:
-			return None			
+            if type == int:
+                return self.config.getint(section, option)
+            elif type == float:
+                return self.config.getfloat(section, option)
+            elif type == bool:
+                return self.config.getboolean(section, option)
+            else:
+                return self.config.get(section, option)
+        except:
+            return None
+
+    def getAvatarPixelSize(self):
+        setting = self.get('appearance', 'avatar_size')
+        if setting == 'tiny':
+            return 16
+        elif setting == 'small':
+            return 24
+        elif setting == 'large':
+            return 48
+        else:
+            return -1
