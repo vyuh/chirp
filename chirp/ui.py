@@ -24,7 +24,9 @@ import pygtk
 pygtk.require('2.0')
 import gtk, gtk.gdk
 import gobject
+import pango
 
+import string
 import threading
 
 import uiext, cache
@@ -54,10 +56,10 @@ class MainWindow(object):
             elif self.window.view == self.window.VIEW_FRIENDS:
                 statuses = self.window.parent.api.GetFriendsTimeline()
             elif self.window.view == self.window.VIEW_USER:
-                statuses = self.window.parent.api.GetUserTimeline('twitter')
+                statuses = self.window.parent.api.GetUserTimeline(self.window.view_user)
 
             for status in statuses:
-                gobject.idle_add(self.window.addTweet, status)
+                self.window.addTweet(status)
 
     class avatarUpdateThread(threading.Thread):
         def __init__(self, window, url, iter):
@@ -65,10 +67,12 @@ class MainWindow(object):
             self.window = window
             self.url = url
             self.iter = iter
-        
+
         def run(self):
             loader = gtk.gdk.PixbufLoader()
-            loader.set_size(48, 48)
+
+            size = self.window.parent.config.getAvatarPixelSize()
+            loader.set_size(size, size)
         
             data = self.window.cachefetcher.fetch(self.url, 900)
             loader.write(data)
@@ -79,7 +83,7 @@ class MainWindow(object):
     def __init__(self, parent):
         self.parent = parent
 
-        self.parent.apiAuthenticate()
+        self.parent.authenticate()
 
         self.cachefetcher = cache.DiskCacheFetcher()
 
@@ -93,38 +97,65 @@ class MainWindow(object):
 
         self.tweets = []
         self.view = self.VIEW_FRIENDS
+        self.view_user = 'chirp'
 
         self.rthread = self.refreshThread(window=self)
         self.refresh()
 
     def __initTreeView(self):
+        def resize_callback(treeview, allocation, column, cell):
+            otherColumns = (c for c in treeview.get_columns() if c != column)
+            newWidth = allocation.width - sum(c.get_width() for c in otherColumns)
+            newWidth -= treeview.style_get_property('horizontal-separator') * 2
+
+            if cell.props.wrap_width == newWidth or newWidth <= 0: return
+
+            cell.props.wrap_width = newWidth
+            store = treeview.get_model()
+            iter = store.get_iter_first()
+
+            while iter and store.iter_is_valid(iter):
+                store.row_changed(store.get_path(iter), iter)
+                iter = store.iter_next(iter)
+                treeview.set_size_request(0,-1)
+
         treeview = self.builder.get_object('mainTreeView')
+
+        if self.parent.config.get('appearance', 'list_striped', bool):
+            treeview.set_property('rules-hint', True)
         
         # avatar, name, status
         self.model = gtk.ListStore(gobject.TYPE_OBJECT, gobject.TYPE_STRING, gobject.TYPE_STRING)
         treeview.set_model(self.model)
 
-        avatar_cr = uiext.CellRendererRoundedPixbuf()
+        if self.parent.config.get('appearance', 'avatar_rounded', bool):
+            avatar_cr = uiext.CellRendererRoundedPixbuf()
+        else:
+            avatar_cr = gtk.CellRendererPixbuf()
+
         user_cr = gtk.CellRendererText()
         status_cr = gtk.CellRendererText()
         
         user_column = gtk.TreeViewColumn('User', None)
-        status_column = gtk.TreeViewColumn('Status', status_cr, markup=2)
-       
         user_column.pack_start(avatar_cr, False)
         user_column.add_attribute(avatar_cr, 'pixbuf', 0)
-
         user_column.pack_start(user_cr, True)
         #user_column.add_attribute(user_cr, 'text', 1)
+
+        status_column = gtk.TreeViewColumn('Status', status_cr, markup=2)
+        status_cr.set_property('wrap-mode', pango.WRAP_WORD)
         
         treeview.append_column(user_column)
         treeview.append_column(status_column)
+
+        treeview.connect_after('size-allocate', resize_callback, status_column, status_cr)
 
         # get loading icon
 
         icon_theme = gtk.icon_theme_get_default()
         try:
-            self.loading_image = icon_theme.load_icon("image-loading", 48, 0)
+            size = self.parent.config.getAvatarPixelSize()
+            self.loading_image = icon_theme.load_icon('image-loading', size, 0)
         except gobject.GError, exc:
             self.loading_image = None
 
@@ -139,16 +170,22 @@ class MainWindow(object):
     def __connectSignals(self):
         self.builder.connect_signals({
             'on_mainWindow_delete_event': self.hide,
-            'on_updateButton_clicked': self.refresh
+
+            'on_updateButton_clicked': self.sendUpdate,
+            'on_refreshButton_clicked': self.refresh,
+            'on_prefsButton_clicked': self.parent.showPrefs
         })
 
     def addTweet(self, status):
-        tweettext = '<b>' + status.user.screen_name + '</b>\n' + status.text
-        #'<small>' + tweet.created_at + '</small>'
+        tpl = string.Template(self.parent.config.get('appearance', 'format'))
+        text = tpl.safe_substitute({
+            'username': status.user.screen_name,
+            'message': status.text
+        })
 
         data = [self.loading_image,
                 status.user.screen_name,
-                tweettext]
+                text]
 
         listiter = self.model.append(data)
 
@@ -159,7 +196,7 @@ class MainWindow(object):
         self.model.clear()
 
     def sendUpdate(self, widget=None, event=None):
-        pass
+        print 'hello world'
 
     def refresh(self, widget=None, event=None):
         if not self.rthread.isAlive():
@@ -174,30 +211,36 @@ class MainWindow(object):
         self.parent.hide()
         self.window.hide()
 
-    """
-    def pushStatus(self, context, text):
-        statusbar = self.builder.get_object('statusbar')
-        contextid = gtk.Statusbar.get_context_id(statusbar, context)
-        statusbar.push(contextid, text)
-        return contextid
-
-    def popStatus(self, contextid):
-        statusbar = self.builder.get_object('statusbar')
-        statusbar.pop(contextid)
-
-    def toggleStatusbar(self, widget=None, event=None):
-        statusbar = self.builder.get_object('statusbar')
-        checkbox = self.builder.get_object('menuitemStatusbar')
-        if checkbox.active == False:
-            statusbar.hide()
-        else:
-            statusbar.show()
-    """
-
 class PreferencesDialog(object):
     def __init__(self, parent):
         self.parent = parent
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(UI_PREFS)
         self.dialog = self.builder.get_object('prefsDialog')
 
-    def run(self):
+        self.__connectSignals()
+
+    def __connectSignals(self):
+        self.builder.connect_signals({
+            'on_prefsDialog_response': self.handleResponse
+        })
+
+    def handleResponse(self, dialog, response_id):
+        if response_id == gtk.RESPONSE_CLOSE or response_id == gtk.RESPONSE_DELETE_EVENT:
+            self.hide()
+
+    def show(self):
+        self.dialog.run()
+
+    def hide(self):
+        self.dialog.hide()
+
+class SignInDialog(object):
+    def __init__(self, parent):
+        self.parent = parent
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(UI_SIGNIN)
+        self.dialog = self.builder.get_object('signInDialog')
+
+    def show(self):
         self.dialog.run()
