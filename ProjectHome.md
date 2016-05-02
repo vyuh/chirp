@@ -1,0 +1,2 @@
+Chirp is a [Twitter](http://twitter.com) desktop client written in Python/GTK+.
+Right now it's in the very-pre-alpha stage (only public timeline reading works), and I'm not working on it actively. Maybe it'll be ready for use sometime, though.
